@@ -10,10 +10,20 @@ end
 Question = Struct.new(:text, :answer) do
 end
 
-player1 = Player.new("Player 1")
-player2 = Player.new("Player 2")
-players = [player1, player2].shuffle
-puts players.collect(&:name).join(", ")
+puts "How Many Players?"
+number_of_players = gets.chomp.to_i
+players = []
+index = 0
+number_of_players.times do
+  index += 1
+  puts "Player #{index} Name:"
+  name = gets.chomp
+  players << Player.new(name)
+end
+
+players = players.shuffle
+puts "Starting Order: #{players.collect(&:name).join(', ')}"
+
 questions = []
 questions << Question.new("Thomas Edison demonstrates his phonograph for the first time.",1877)
 questions << Question.new("FC Barcelona is founded by Catalan, Spanish and Englishmen. It later develops into one of Spanish football's most iconic and strongest teams.",1899)
