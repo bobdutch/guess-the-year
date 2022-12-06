@@ -8,6 +8,18 @@ Player = Struct.new(:name) do
 end
 
 Question = Struct.new(:text, :answer) do
+
+  def guesses
+    @guesses ||= []
+  end
+end
+
+Guess = Struct.new(:guess, :player, :correct_answer) do
+
+  def difference
+    (correct_answer - guess).abs
+  end
+
 end
 
 puts "How Many Players?"
@@ -22,7 +34,6 @@ number_of_players.times do
 end
 
 players = players.shuffle
-puts "Starting Order: #{players.collect(&:name).join(', ')}"
 
 questions = []
 questions << Question.new("Thomas Edison demonstrates his phonograph for the first time.",1877)
@@ -33,17 +44,19 @@ questions << Question.new("Enos, a chimpanzee, is launched into space. The space
 questions << Question.new("\"I Want to Hold Your Hand\", recorded on October 17, is released by the Beatles in the United Kingdom.",1963)
 questions << Question.new("Atari releases Pong, the first commercially successful video game.",1972)
 
-questions.each do |question|
-  puts question.text
-  guesses = []
+questions.each_with_index do |question, index|
+  puts "Question #{index + 1} #{question.text}:"
+  puts "Order: #{players.collect(&:name).join(', ')}"
   players.each do |player|
-    puts "#{player.name}'s Guess"
-    answer = gets.chomp.to_i
-    difference = (question.answer - answer).abs
-    puts difference
-    guesses << { player: player, guess: answer, difference: difference}
+    puts "#{player.name}'s Guess:"
+    guess = gets.chomp.to_i
+    question.guesses << Guess.new(guess, player, question.answer)
   end
-  win = guesses.sort_by { |g| g[:difference] }.first
-  puts "winner"
-  puts win
+  puts "Results:"
+  puts "The correct answer is #{question.answer}"
+  win = question.guesses.sort_by { |g| g.difference }.first
+  puts "#{win.player.name} is closest (off by #{win.difference})"
+  puts
+  
+  players = players.rotate(1)
 end
