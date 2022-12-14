@@ -21,6 +21,25 @@ Guess = Struct.new(:guess, :player, :correct_answer) do
   end
 
 end
+puts "question file name?"
+filename = gets.chomp
+unless filename
+  puts "give it a file"
+  exit
+end
+
+questions = []
+delim = '-'
+File.open(filename, 'r').each_line do |line|
+  line = line.strip
+  next unless line
+  year, text = line.split(delim,2)
+  questions << Question.new(text.strip, year.to_i)
+end
+if questions.empty?
+  puts "no questions"
+  exit
+end
 
 puts "How Many Players?"
 number_of_players = gets.chomp.to_i
@@ -34,15 +53,6 @@ number_of_players.times do
 end
 
 players = players.shuffle
-
-questions = []
-questions << Question.new("Thomas Edison demonstrates his phonograph for the first time.",1877)
-questions << Question.new("FC Barcelona is founded by Catalan, Spanish and Englishmen. It later develops into one of Spanish football's most iconic and strongest teams.",1899)
-questions << Question.new("U.S. Admiral Richard E. Byrd leads the first expedition to fly over the South Pole.",1929)
-#questions << Question.new("U.S. President-elect Dwight D. Eisenhower fulfills a campaign promise by traveling to Korea to find out what can be done to end the conflict.",1952)
-questions << Question.new("Enos, a chimpanzee, is launched into space. The spacecraft orbits the Earth twice and splashes down off the coast of Puerto Rico.",1961)
-questions << Question.new("\"I Want to Hold Your Hand\", recorded on October 17, is released by the Beatles in the United Kingdom.",1963)
-questions << Question.new("Atari releases Pong, the first commercially successful video game.",1972)
 
 questions.each_with_index do |question, index|
   puts "Question #{index + 1} #{question.text}:"
