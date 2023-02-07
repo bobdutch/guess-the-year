@@ -64,8 +64,17 @@ questions.each_with_index do |question, index|
   end
   puts "Results:"
   puts "The correct answer is #{question.answer}"
-  win = question.guesses.sort_by { |g| g.difference }.first
-  puts "#{win.player.name} is closest (off by #{win.difference})"
+  min_difference = nil
+  winners = []
+  question.guesses.sort_by { |g| g.difference }.each do |guess|
+    min_difference ||= guess.difference
+    if guess.difference == min_difference
+      winners << guess
+    end
+  end
+  winners.each do |win|
+    puts "#{win.player.name} is closest (off by #{win.difference})"
+  end
   puts
   
   players = players.rotate(1)
