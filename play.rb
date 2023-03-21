@@ -21,10 +21,26 @@ Guess = Struct.new(:guess, :player, :correct_answer) do
   end
 
 end
-puts "question file name?"
-filename = gets.chomp
+
+def log(string)
+  File.open("out.txt", 'a') {|f| f.write("#{string}\n") }
+end
+
+def logputs(string)
+  log string
+  puts string
+end
+
+def loggets
+  string = gets.chomp
+  log string
+  string
+end
+
+logputs "question file name?"
+filename = loggets
 unless filename
-  puts "give it a file"
+  logputs "give it a file"
   exit
 end
 
@@ -37,33 +53,33 @@ File.open(filename, 'r').each_line do |line|
   questions << Question.new(text.strip, year.to_i)
 end
 if questions.empty?
-  puts "no questions"
+  logputs "no questions"
   exit
 end
 
-puts "How Many Players?"
-number_of_players = gets.chomp.to_i
+logputs "How Many Players?"
+number_of_players = loggets.to_i
 players = []
 index = 0
 number_of_players.times do
   index += 1
-  puts "Player #{index} Name:"
-  name = gets.chomp
+  logputs "Player #{index} Name:"
+  name = loggets
   players << Player.new(name)
 end
 
 players = players.shuffle
 
 questions.each_with_index do |question, index|
-  puts "Question #{index + 1} #{question.text}:"
-  puts "Order: #{players.collect(&:name).join(', ')}"
+  logputs "Question #{index + 1} #{question.text}:"
+  logputs "Order: #{players.collect(&:name).join(', ')}"
   players.each do |player|
-    puts "#{player.name}'s Guess:"
-    guess = gets.chomp.to_i
+    logputs "#{player.name}'s Guess:"
+    guess = loggets.to_i
     question.guesses << Guess.new(guess, player, question.answer)
   end
-  puts "Results:"
-  puts "The correct answer is #{question.answer}"
+  logputs "Results:"
+  logputs "The correct answer is #{question.answer}"
   min_difference = nil
   winners = []
   question.guesses.sort_by { |g| g.difference }.each do |guess|
@@ -73,9 +89,9 @@ questions.each_with_index do |question, index|
     end
   end
   winners.each do |win|
-    puts "#{win.player.name} is closest (off by #{win.difference})"
+    logputs "#{win.player.name} is closest (off by #{win.difference})"
   end
-  puts
+  logputs("")
   
   players = players.rotate(1)
 end
