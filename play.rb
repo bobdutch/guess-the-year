@@ -45,7 +45,7 @@ unless filename
 end
 
 questions = []
-delim = '-'
+delim = ' - '
 File.open(filename, 'r').each_line do |line|
   line = line.strip
   next unless line
