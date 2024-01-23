@@ -96,6 +96,10 @@ questions.each_with_index do |question, index|
   end
   winners.each do |win|
     logputs "#{win.player.name} is closest (off by #{win.difference})"
+    win.player.score += win.difference.zero? ? 2 : 1
+  end
+  players.each do |player|
+    logputs "#{player.name} #{player.score}"
   end
   logputs("")
   
