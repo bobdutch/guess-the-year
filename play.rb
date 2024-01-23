@@ -73,55 +73,65 @@ class Game
     finish_game
   end
 
-  def start_game
-    questions.each_with_index do |question, index|
-      logputs "Question #{index + 1} #{question.text}:"
-      logputs "Order: #{players.collect(&:name).join(', ')}"
-      players.each do |player|
-        logputs "#{player.name}'s Guess:"
-        guess = loggets.to_i
-        question.record_guess(guess, player)
-      end
-
-      logputs "Results:"
-      logputs "The correct answer is #{question.answer}"
-
-      min_difference = nil
-      winners = []
-
-      question.guesses.sort_by { |g| g.difference }.each do |guess|
-        min_difference ||= guess.difference
-        winners << guess if guess.difference == min_difference
-      end
-
-      winners.each do |win|
-        logputs "#{win.player.name} is closest (off by #{win.difference})"
-        win.player.score += win.difference.zero? ? 2 : 1
-      end
-
-      logputs("\nCurrent Scores:")
-      players.sort_by { |player| -player.score }.each do |player|
-        logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
-      end
-
-      logputs("")
-      self.players = players.rotate(1)
-    end
-
-    def finish_game
-      max_score = players.max_by(&:score).score
-      winners = players.select { |player| player.score == max_score }
-
-      if winners.size == 1
-        logputs "Game Over!"
-        logputs "#{winners.first.name} is the winner with a score of #{winners.first.score}!"
-      else
-        logputs "It's a tie! Time for a tiebreaker question."
-      end
+  def output_score
+    logputs("\nCurrent Scores:")
+    players.sort_by { |player| -player.score }.each do |player|
+      logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
     end
   end
 
   private
+
+  def start_game
+    questions.each_with_index do |question, index|
+      ask_question(question, index)
+      output_score
+      rotate_starting_order
+      logputs("")
+    end
+  end
+
+  def finish_game
+    max_score = players.max_by(&:score).score
+    winners = players.select { |player| player.score == max_score }
+
+    if winners.size == 1
+      logputs "Game Over!"
+      logputs "#{winners.first.name} is the winner with a score of #{winners.first.score}!"
+    else
+      logputs "It's a tie! Time for a tiebreaker question."
+    end
+  end
+
+  def ask_question(question, index)
+    logputs "Question #{index + 1} #{question.text}:"
+    logputs "Order: #{players.collect(&:name).join(', ')}"
+    players.each do |player|
+      logputs "#{player.name}'s Guess:"
+      guess = loggets.to_i
+      question.record_guess(guess, player)
+    end
+
+    logputs "\nResults:"
+    logputs "The correct answer is #{question.answer}"
+
+    min_difference = nil
+    winners = []
+
+    question.guesses.sort_by { |g| g.difference }.each do |guess|
+      min_difference ||= guess.difference
+      winners << guess if guess.difference == min_difference
+    end
+
+    winners.each do |win|
+      logputs "#{win.player.name} is closest (off by #{win.difference})"
+      win.player.score += win.difference.zero? ? 2 : 1
+    end
+  end
+
+  def rotate_starting_order
+    self.players = players.rotate(1)
+  end
 
   def log(string)
     @log_file_path ||= setup_log_file_path
