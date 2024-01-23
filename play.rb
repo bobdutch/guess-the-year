@@ -43,10 +43,13 @@ def loggets
   string
 end
 
-logputs "question file name?"
-filename = loggets
-unless filename
-  logputs "give it a file"
+default_filename = Time.now.strftime('%m-%d.txt')
+logputs "Question file name? (Press Enter/Return to use default: #{default_filename})"
+filename = loggets.empty? ? default_filename : loggets
+filename = File.join(File.dirname(__FILE__),"questions",filename)
+
+if !File.exist?(filename)
+  logputs "Error: File '#{filename}' not found. Exiting."
   exit
 end
 
