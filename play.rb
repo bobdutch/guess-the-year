@@ -30,13 +30,10 @@ class Game
 
   def setup_game
     logputs "Question file name? (Press Enter/Return to use default: #{default_filename})"
-    filename = loggets.empty? ? default_filename : loggets
+    filename_input = loggets
+    filename = filename_input.empty? ? default_filename : filename_input
     filename = File.join(File.dirname(__FILE__), "questions", filename)
-
-    if !File.exist?(filename)
-      logputs "Error: File '#{filename}' not found. Exiting."
-      exit
-    end
+    error_and_exit("File '#{filename}' not found.") if !File.exist?(filename)
 
     delim = ' - '
     File.open(filename, 'r').each_line do |line|
@@ -45,11 +42,7 @@ class Game
       year, text = line.split(delim, 2)
       self.questions << Question.new(text.strip, year.to_i)
     end
-
-    if questions.empty?
-      logputs "No questions"
-      exit
-    end
+    error_and_exit("No questions in file.") if questions.empty?
 
     logputs "How Many Players?"
     number_of_players = loggets.to_i
@@ -139,6 +132,11 @@ class Game
 
   def default_filename
     Time.now.strftime('%m-%d.txt')
+  end
+
+  def error_and_exit(message)
+    logputs "Error: #{message} Exiting."
+    exit
   end
 end
 
