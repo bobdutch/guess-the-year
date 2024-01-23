@@ -11,14 +11,14 @@ class Game
   def play
     questions.each_with_index do |question, index|
       ask_question(question, index)
-      output_score
+      current_score
       rotate_starting_order
       logputs("")
     end
     finish_game
   end
 
-  def output_score
+  def current_score
     logputs("\nCurrent Scores:")
     players.sort_by { |player| -player.score }.each do |player|
       logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
@@ -169,4 +169,7 @@ end
 
 # Create an instance of the Game class and start the game
 game = Game.new
+#puts game.players
+#puts game.questions
+#puts game.current_score
 game.play
