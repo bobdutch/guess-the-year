@@ -23,7 +23,13 @@ Guess = Struct.new(:guess, :player, :correct_answer) do
 end
 
 def log(string)
-  File.open("out.txt", 'a') {|f| f.write("#{string}\n") }
+  current_directory = File.dirname(__FILE__)
+  log_directory = File.join(current_directory, 'log')
+  Dir.mkdir(log_directory) unless File.exist?(log_directory)
+  current_date = Time.now.strftime('%Y-%m-%d')
+  log_file_path = File.join(log_directory, "#{current_date}.txt")
+
+  File.open(log_file_path, 'a') {|f| f.puts("#{string}\n") }
 end
 
 def logputs(string)
