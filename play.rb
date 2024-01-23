@@ -88,7 +88,8 @@ class Game
         win.player.score += win.difference.zero? ? 2 : 1
       end
 
-      players.each do |player|
+      logputs("\nCurrent Scores:")
+      players.sort_by { |player| -player.score }.each do |player|
         logputs "#{player.name} #{player.score}"
       end
 
