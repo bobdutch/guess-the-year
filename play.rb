@@ -3,16 +3,20 @@ class Game
   attr_accessor :players, :questions
 
   Player = Struct.new(:name) do
-    attr_writer :score
+    attr_accessor :score
 
-    def score
-      @score ||= 0
+    def initialize(name)
+      super(name)
+      self.score = 0
     end
   end
 
   Question = Struct.new(:text, :answer) do
-    def guesses
-      @guesses ||= []
+    attr_accessor :guesses
+
+    def initialize(text, answer)
+      super(text, answer)
+      self.guesses = []
     end
   end
 
