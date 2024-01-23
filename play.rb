@@ -62,6 +62,11 @@ class Game
     @players = @players.shuffle
   end
 
+  def play
+    start_game
+    finish_game
+  end
+
   def start_game
     @questions.each_with_index do |question, index|
       logputs "Question #{index + 1} #{question.text}:"
@@ -95,6 +100,18 @@ class Game
       logputs("")
       @players = @players.rotate(1)
     end
+
+    def finish_game
+      max_score = @players.max_by(&:score).score
+      winners = @players.select { |player| player.score == max_score }
+
+      if winners.size == 1
+        logputs "Game Over!"
+        logputs "#{winners.first.name} is the winner with a score of #{winners.first.score}!"
+      else
+        logputs "It's a tie! Time for a tiebreaker question."
+      end
+    end
   end
 
   private
@@ -125,4 +142,4 @@ end
 
 # Create an instance of the Game class and start the game
 game = Game.new
-game.start_game
+game.play
