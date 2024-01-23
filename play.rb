@@ -19,8 +19,8 @@ class Game
       self.guesses = []
     end
 
-    def record_guess(guess, player, correct_answer)
-      self.guesses << Guess.new(guess, player, correct_answer)
+    def record_guess(guess, player)
+      self.guesses << Guess.new(guess, player, answer)
     end
   end
 
@@ -77,7 +77,7 @@ class Game
       players.each do |player|
         logputs "#{player.name}'s Guess:"
         guess = loggets.to_i
-        question.record_guess(guess, player, question.answer)
+        question.record_guess(guess, player)
       end
 
       logputs "Results:"
