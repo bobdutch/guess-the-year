@@ -2,6 +2,34 @@
 class Game
   attr_reader :players, :questions
 
+  def initialize
+    self.questions = []
+    self.players = []
+    setup_game
+  end
+
+  def play
+    questions.each_with_index do |question, index|
+      ask_question(question, index)
+      output_score
+      rotate_starting_order
+      logputs("")
+    end
+    finish_game
+  end
+
+  def output_score
+    logputs("\nCurrent Scores:")
+    players.sort_by { |player| -player.score }.each do |player|
+      logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
+    end
+  end
+
+  private
+
+  attr_writer :players, :questions
+  attr_accessor :log_file_path
+
   Player = Struct.new(:name) do
     attr_accessor :score, :total_difference
 
@@ -33,12 +61,6 @@ class Game
     end
   end
 
-  def initialize
-    self.questions = []
-    self.players = []
-    setup_game
-  end
-
   def setup_game
     logputs "Question file name? (Press Enter/Return to use default: #{default_filename})"
     filename_input = loggets
@@ -67,28 +89,6 @@ class Game
 
     self.players = players.shuffle
   end
-
-  def play
-    questions.each_with_index do |question, index|
-      ask_question(question, index)
-      output_score
-      rotate_starting_order
-      logputs("")
-    end
-    finish_game
-  end
-
-  def output_score
-    logputs("\nCurrent Scores:")
-    players.sort_by { |player| -player.score }.each do |player|
-      logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
-    end
-  end
-
-  private
-
-  attr_writer :players, :questions
-  attr_accessor :log_file_path
 
   def finish_game
     max_score = players.max_by(&:score).score
