@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 class Game
+  attr_accessor :players, :questions
+
   Player = Struct.new(:name) do
     attr_writer :score
 
@@ -21,6 +23,8 @@ class Game
   end
 
   def initialize
+    self.questions = []
+    self.players = []
     setup_game
   end
 
@@ -34,32 +38,30 @@ class Game
       exit
     end
 
-    @questions = []
     delim = ' - '
     File.open(filename, 'r').each_line do |line|
       line = line.strip
       next unless line
       year, text = line.split(delim, 2)
-      @questions << Question.new(text.strip, year.to_i)
+      self.questions << Question.new(text.strip, year.to_i)
     end
 
-    if @questions.empty?
+    if questions.empty?
       logputs "No questions"
       exit
     end
 
     logputs "How Many Players?"
     number_of_players = loggets.to_i
-    @players = []
     index = 0
     number_of_players.times do
       index += 1
       logputs "Player #{index} Name:"
       name = loggets
-      @players << Player.new(name)
+      self.players << Player.new(name)
     end
 
-    @players = @players.shuffle
+    self.players = players.shuffle
   end
 
   def play
@@ -68,10 +70,10 @@ class Game
   end
 
   def start_game
-    @questions.each_with_index do |question, index|
+    questions.each_with_index do |question, index|
       logputs "Question #{index + 1} #{question.text}:"
-      logputs "Order: #{@players.collect(&:name).join(', ')}"
-      @players.each do |player|
+      logputs "Order: #{players.collect(&:name).join(', ')}"
+      players.each do |player|
         logputs "#{player.name}'s Guess:"
         guess = loggets.to_i
         question.guesses << Guess.new(guess, player, question.answer)
@@ -93,17 +95,17 @@ class Game
         win.player.score += win.difference.zero? ? 2 : 1
       end
 
-      @players.each do |player|
+      players.each do |player|
         logputs "#{player.name} #{player.score}"
       end
 
       logputs("")
-      @players = @players.rotate(1)
+      self.players = players.rotate(1)
     end
 
     def finish_game
-      max_score = @players.max_by(&:score).score
-      winners = @players.select { |player| player.score == max_score }
+      max_score = players.max_by(&:score).score
+      winners = players.select { |player| player.score == max_score }
 
       if winners.size == 1
         logputs "Game Over!"
