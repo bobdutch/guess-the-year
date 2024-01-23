@@ -43,7 +43,7 @@ class Game
     logputs "Question file name? (Press Enter/Return to use default: #{default_filename})"
     filename_input = loggets
     filename = filename_input.empty? ? default_filename : filename_input
-    filename = File.join(File.dirname(__FILE__), "questions", filename)
+    filename = File.join(current_directory, "questions", filename)
     error_and_exit("File '#{filename}' not found.") if !File.exist?(filename)
 
     delim = ' - '
@@ -124,13 +124,8 @@ class Game
   private
 
   def log(string)
-    current_directory = File.dirname(__FILE__)
-    log_directory = File.join(current_directory, 'log')
-    Dir.mkdir(log_directory) unless File.exist?(log_directory)
-    current_date = Time.now.strftime('%Y-%m-%d')
-    log_file_path = File.join(log_directory, "#{current_date}.txt")
-
-    File.open(log_file_path, 'a') { |f| f.puts("#{string}\n") }
+    @log_file_path ||= setup_log_file_path
+    File.open(@log_file_path, 'a') { |f| f.puts("#{string}\n") }
   end
 
   def loggets
@@ -149,6 +144,17 @@ class Game
   def error_and_exit(message)
     logputs "Error: #{message} Exiting."
     exit
+  end
+
+  def setup_log_file_path
+    log_directory = File.join(current_directory, 'log')
+    Dir.mkdir(log_directory) unless File.exist?(log_directory)
+    current_date = Time.now.strftime('%Y-%m-%d')
+    File.join(log_directory, "#{current_date}.txt")
+  end
+
+  def current_directory
+    File.dirname(__FILE__)
   end
 end
 
