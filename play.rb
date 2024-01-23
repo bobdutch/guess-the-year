@@ -18,6 +18,10 @@ class Game
       super(text, answer)
       self.guesses = []
     end
+
+    def record_guess(guess, player, correct_answer)
+      self.guesses << Guess.new(guess, player, correct_answer)
+    end
   end
 
   Guess = Struct.new(:guess, :player, :correct_answer) do
@@ -73,7 +77,7 @@ class Game
       players.each do |player|
         logputs "#{player.name}'s Guess:"
         guess = loggets.to_i
-        question.guesses << Guess.new(guess, player, question.answer)
+        question.record_guess(guess, player, question.answer)
       end
 
       logputs "Results:"
