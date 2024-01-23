@@ -69,7 +69,12 @@ class Game
   end
 
   def play
-    start_game
+    questions.each_with_index do |question, index|
+      ask_question(question, index)
+      output_score
+      rotate_starting_order
+      logputs("")
+    end
     finish_game
   end
 
@@ -84,15 +89,6 @@ class Game
 
   attr_writer :players, :questions
   attr_accessor :log_file_path
-
-  def start_game
-    questions.each_with_index do |question, index|
-      ask_question(question, index)
-      output_score
-      rotate_starting_order
-      logputs("")
-    end
-  end
 
   def finish_game
     max_score = players.max_by(&:score).score
