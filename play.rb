@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 class Game
-  attr_accessor :players, :questions
+  attr_reader :players, :questions
 
   Player = Struct.new(:name) do
     attr_accessor :score, :total_difference
@@ -82,6 +82,9 @@ class Game
 
   private
 
+  attr_writer :players, :questions
+  attr_accessor :log_file_path
+
   def start_game
     questions.each_with_index do |question, index|
       ask_question(question, index)
@@ -134,8 +137,8 @@ class Game
   end
 
   def log(string)
-    @log_file_path ||= setup_log_file_path
-    File.open(@log_file_path, 'a') { |f| f.puts("#{string}\n") }
+    self.log_file_path ||= setup_log_file_path
+    File.open(log_file_path, 'a') { |f| f.puts("#{string}\n") }
   end
 
   def loggets
