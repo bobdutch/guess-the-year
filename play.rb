@@ -3,11 +3,11 @@ class Game
   attr_accessor :players, :questions
 
   Player = Struct.new(:name) do
-    attr_accessor :score
+    attr_accessor :score, :total_difference
 
     def initialize(name)
       super(name)
-      self.score = 0
+      self.score = self.total_difference = 0
     end
   end
 
@@ -21,6 +21,9 @@ class Game
 
     def record_guess(guess, player)
       self.guesses << Guess.new(guess, player, answer)
+
+      # Update the player's total_difference
+      player.total_difference += guesses.last.difference
     end
   end
 
@@ -98,7 +101,7 @@ class Game
 
       logputs("\nCurrent Scores:")
       players.sort_by { |player| -player.score }.each do |player|
-        logputs "#{player.name} #{player.score}"
+        logputs "#{player.name}: #{player.score} (off by #{player.total_difference})"
       end
 
       logputs("")
