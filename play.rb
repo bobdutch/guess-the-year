@@ -132,18 +132,18 @@ class Game
     self.players = players.rotate(1)
   end
 
-  def log(string)
+  def log(message)
     self.log_file_path ||= setup_log_file_path
-    File.open(log_file_path, 'a') { |f| f.puts("#{string}\n") }
+    File.open(log_file_path, 'a') { |f| f.puts("#{message}\n") }
   end
 
   def loggets
     gets.chomp
   end
 
-  def logputs(string)
-    log string
-    puts string
+  def logputs(message)
+    log message
+    puts message
   end
 
   def default_filename
