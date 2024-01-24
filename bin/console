@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+libx = File.expand_path('../lib', __dir__)
+$LOAD_PATH.unshift(libx) unless $LOAD_PATH.include?(libx)
+
+require "guess_the_year"
+
+require "irb"
+IRB.start(__FILE__)
