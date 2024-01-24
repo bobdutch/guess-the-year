@@ -48,16 +48,16 @@ class Game
     end
 
     def record_guess(guess, player)
-      self.guesses << Guess.new(guess, player, answer)
+      self.guesses << Guess.new(guess, player, self)
 
       # Update the player's total_difference
       player.total_difference += guesses.last.difference
     end
   end
 
-  Guess = Struct.new(:guess, :player, :correct_answer) do
+  Guess = Struct.new(:guess, :player, :question) do
     def difference
-      (correct_answer - guess).abs
+      (question.answer - guess).abs
     end
   end
 
