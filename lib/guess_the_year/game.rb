@@ -138,7 +138,9 @@ module GuessTheYear
     end
 
     def loggets
-      gets.chomp
+      message = gets.chomp
+      log message
+      message
     end
 
     def logputs(message)
