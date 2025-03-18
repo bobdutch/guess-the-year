@@ -68,7 +68,7 @@ module GuessTheYear
       filename = File.join(root_directory, "questions", filename)
       error_and_exit("File '#{filename}' not found.") if !File.exist?(filename)
 
-      delim = ' - '
+      delim = /\s[-–]\s/
       File.open(filename, 'r').each_line do |line|
         line = line.strip
         next unless line
